@@ -20,28 +20,22 @@ namespace RoslynScriptingDemo
     {
       var t1 = new Task(new Program().TestMethod);
       t1.RunSynchronously();
-      //t1.Wait();
-      Console.WriteLine("done");
-
-      Globals globals = new Globals();
-      var task = CSharpScript.RunAsync("var one = 1;", ScriptOptions.Default, globals, globals.GetType());
-      var task2 = task.Result.ContinueWithAsync("var two = 2;");
-      var last = task2.Result.ContinueWithAsync("Final = one * two;");
-      
-      last.Wait();
-      Console.WriteLine("Variables");
-      foreach (var variable in last.Result.Variables.Select(variable => variable.Name + ":" + variable.Value))
-      {
-        Console.WriteLine(variable);
-      }
-      Console.WriteLine("Global.Final: " + globals.Final);
       Console.ReadKey();
     }
 
     public async void TestMethod()
     {
-      var state = await CSharpScript.RunAsync("int X = 100;").Result.ContinueWithAsync("int y = 200;");
-      Console.WriteLine(state.ReturnValue);
+      var globals = new Globals();
+      var task = CSharpScript.RunAsync("var two = 2;", ScriptOptions.Default, globals, globals.GetType());
+      var task2 = task.Result.ContinueWithAsync("var three = 3;");
+      var finalState = await task2.Result.ContinueWithAsync("Final = two * three;");
+
+      Console.WriteLine("Variables");
+      foreach (var variable in finalState.Variables.Select(variable => variable.Name + ":" + variable.Value))
+      {
+        Console.WriteLine(variable);
+      }
+      Console.WriteLine("Global.Final: " + globals.Final);
     }
   }
 
@@ -49,5 +43,4 @@ namespace RoslynScriptingDemo
   {
     public int Final;
   }
- 
-  }
+}
