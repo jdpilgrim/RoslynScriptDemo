@@ -2,7 +2,7 @@
 Example of using Roslyn scripting 
 
 Uses nuget package: 
-<package id="Microsoft.CodeAnalysis.CSharp.Scripting" version="1.2.0-beta-20151118-02" targetFramework="net461" />
+package id="Microsoft.CodeAnalysis.CSharp.Scripting" version="1.2.0-beta-20151118-02" targetFramework="net461"
 
 and all its friends.
 
