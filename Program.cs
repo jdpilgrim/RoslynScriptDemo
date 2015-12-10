@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 
@@ -16,59 +18,36 @@ namespace RoslynScriptingDemo
   {
     private static void Main(string[] args)
     {
-      CSharpScriptEngine.Execute(
-//This could be code submitted from the editor
-        @"
-    public class ScriptedClass
-    {
-      public string HelloWorld { get; set; }
-      public ScriptedClass()
+      var t1 = new Task(new Program().TestMethod);
+      t1.RunSynchronously();
+      //t1.Wait();
+      Console.WriteLine("done");
+
+      Globals globals = new Globals();
+      var task = CSharpScript.RunAsync("var one = 1;", ScriptOptions.Default, globals, globals.GetType());
+      var task2 = task.Result.ContinueWithAsync("var two = 2;");
+      var last = task2.Result.ContinueWithAsync("Final = one * two;");
+      
+      last.Wait();
+      Console.WriteLine("Variables");
+      foreach (var variable in last.Result.Variables.Select(variable => variable.Name + ":" + variable.Value))
       {
-        HelloWorld = ""Hello Roslyn!"";
+        Console.WriteLine(variable);
       }
-    }");
-//And this from the REPL
-      Console.WriteLine(CSharpScriptEngine.Execute("new ScriptedClass().HelloWorld"));
+      Console.WriteLine("Global.Final: " + globals.Final);
       Console.ReadKey();
+    }
+
+    public async void TestMethod()
+    {
+      var state = await CSharpScript.RunAsync("int X = 100;").Result.ContinueWithAsync("int y = 200;");
+      Console.WriteLine(state.ReturnValue);
     }
   }
 
-  #region Nested type: CSharpScriptEngine
-
-    public class CSharpScriptEngine
-    {
-      private static Script _previousInput;
-
-      private static readonly object _globals = new {};
-
-      public static AggregateException Exception { get; private set; }
-
-      public static object Execute(string code)
-      {
-        Script script;
-        if (_previousInput == null)
-        {
-          script = CSharpScript.Create(code, null, _globals.GetType());
-        }
-        else
-        {
-          script = _previousInput.ContinueWith(code);
-        }
-
-        var task = script.RunAsync(_globals);
-        task.Wait();
-
-        Exception = task.Exception;
-
-        if (Exception == null)
-        {
-          var endState = task.Result;
-          _previousInput = endState.Script;
-          return endState.ReturnValue;
-        }
-        return null;
-      }
-    }
-
-    #endregion
+  public class Globals
+  {
+    public int Final;
+  }
+ 
   }
