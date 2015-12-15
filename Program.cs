@@ -9,7 +9,7 @@ namespace RoslynScriptingDemo
   /// <summary>
   /// </summary>
   /// <remarks>
-  ///   Targeted .net 4.6.2
+  ///   Targeted .net 4.6.1
   ///   Added nuget soruce https://www.myget.org/F/roslyn-nightly/
   ///   Added nuget added Microsoft.CodeAnalysis.CSharp.Scripting.1.2.0-beta-20151118-02
   ///   Looked at http://www.jayway.com/2015/05/09/using-roslyn-to-build-a-simple-c-interactive-script-engine/#comment-359503
