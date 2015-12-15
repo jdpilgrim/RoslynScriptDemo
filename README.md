@@ -7,7 +7,7 @@ package id="Microsoft.CodeAnalysis.CSharp.Scripting" version="1.2.0-beta-2015111
 and all its friends.
 
 I did this
-* Targeted .net 4.6.2
+* Targeted .net 4.6.1
 * Added nuget soruce https://www.myget.org/F/roslyn-nightly/
 * Added nuget package Microsoft.CodeAnalysis.CSharp.Scripting.1.2.0-beta-20151118-02
 * Looked at http://www.jayway.com/2015/05/09/using-roslyn-to-build-a-simple-c-interactive-script-engine/#comment-359503
